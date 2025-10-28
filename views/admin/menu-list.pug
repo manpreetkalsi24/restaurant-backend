@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+  h2 Menu List
+  a.button(href="/admin/menu/add") Add New Item
+  if menu.length
+    table
+      thead
+        tr
+          th Name
+          th Category
+          th Price
+          th Description
+          th Actions
+      tbody
+        each item in menu
+          tr
+            td= item.name
+            td= item.category
+            td $#{item.price}
+            td= item.description
+            td
+              a.button(href=`/admin/menu/edit?itemId=${item._id}`) Edit
+              a.button.btn(href=`/admin/menu/delete?itemId=${item._id}` onclick="return confirm('Are you sure you want to delete this menu item?');") Delete
+  else
+    p No menu items yet.

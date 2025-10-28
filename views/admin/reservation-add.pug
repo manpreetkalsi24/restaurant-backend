@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+  h2 Add Reservation
+  form(action="/admin/reservation/add/submit" method="POST")
+    div
+      label(for="name") Name : 
+      input(type="text" name="name" required)
+    div
+      label(for="email") Email : 
+      input(type="email" name="email")
+    div
+      label(for="date") Date : 
+      input(type="date" name="date")
+    div
+      label(for="time") Time : 
+      input(type="time" name="time")
+    div
+      label(for="guests") Guests : 
+      input(type="number" name="guests" min="1")
+    button(type="submit") Add Reservation
+    a.button.btn(href="/admin/reservation") Cancel
