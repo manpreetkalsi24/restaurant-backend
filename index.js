@@ -6,6 +6,9 @@ import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import adminRoutes from "./routes/admin.js";
 import apiRoutes from "./routes/api.js";
+import cors from "cors";
+
+
 
 dotenv.config();
 
@@ -22,6 +25,7 @@ const port = process.env.PORT || 8888;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.use(cors());
 app.locals.db = db;
 
 app.use(express.static(path.join(__dirname, "public")));
