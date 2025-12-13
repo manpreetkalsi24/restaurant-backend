@@ -1,20 +1,34 @@
 extends ../layout
 
 block content
-  h2 Edit Menu Item
-  form(action="/admin/menu/edit/submit" method="POST")
+  h1 Edit Menu Item
+
+  form(action="/admin/menu/edit/submit" method="POST" enctype="multipart/form-data")
+    input(type="hidden" name="itemId" value=editItem._id)
+
     div
-      input(type="hidden" name="itemId" value=editItem._id)
-      label(for="name") Name : 
-      input(type="text" name="name" value=editItem.name required)
+      label(for="name") Name:
+      input(type="text" name="name" id="name" value=editItem.name required)
+
     div
-      label(for="category") Category : 
-      input(type="text" name="category" value=editItem.category)
+      label(for="price") Price:
+      input(type="number" name="price" id="price" step="0.01" value=editItem.price required)
+
     div
-      label(for="price") Price : 
-      input(type="number" step="0.01" name="price" value=editItem.price)
+      label(for="description") Description:
+      textarea(name="description" id="description" rows="3" required)= editItem.description
+
     div
-      label(for="description") Description : 
-      textarea(name="description")= editItem.description
-    button(type="submit") Update
-    a.button.btn(href="/admin/menu") Cancel
+      label(for="image") Current Image:
+      if editItem.image
+        img(src=editItem.image alt=editItem.name width="100" height="80" style="object-fit:cover; border-radius:5px; margin-bottom:10px; display:block;")
+      else
+        p(style="color:gray; font-style:italic;") No image uploaded yet
+
+    div
+      label(for="newImage") Upload New Image (optional):
+      input(type="file" name="newImage" id="newImage" accept="image/*")
+
+    div(style="margin-top:10px;")
+      button(type="submit" class="btn btn-primary") Update Item
+      a.btn.btn-secondary(href="/admin/menu") Cancel

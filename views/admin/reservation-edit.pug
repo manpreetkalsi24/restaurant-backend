@@ -1,23 +1,37 @@
-extends ../layout
+extends ../layout.pug
 
 block content
-  h2 Edit Reservation
+  h1 Edit Reservation
   form(action="/admin/reservation/edit/submit" method="POST")
-    div
-      input(type="hidden" name="resId" value=editRes._id)
-      label(for="name") Name : 
-      input(type="text" name="name" value=editRes.name required)
-    div
-      label(for="email") Email : 
-      input(type="email" name="email" value=editRes.email)
-    div
-      label(for="date") Date : 
-      input(type="date" name="date" value=editRes.date)
-    div
-      label(for="time") Time : 
-      input(type="time" name="time" value=editRes.time)
-    div
-      label(for="guests") Guests : 
-      input(type="number" name="guests" value=editRes.guests min="1")
-    button(type="submit") Update
-    a.button.btn(href="/admin/reservation") Cancel
+    input(type="hidden" name="resId" value=editRes._id)
+
+    div.form-group
+      label(for="name") Name
+      input.form-control(type="text" name="name" id="name" required value=editRes.name)
+
+    div.form-group
+      label(for="phone") Phone Number
+      input.form-control(type="text" name="phone" id="phone" value=editRes.phone)
+
+    div.form-group
+      label(for="email") Email
+      input.form-control(type="email" name="email" id="email" required value=editRes.email)
+
+    div.form-group
+      label(for="date") Date
+      input.form-control(type="date" name="date" id="date" required value=editRes.date)
+
+    div.form-group
+      label(for="time") Time
+      input.form-control(type="time" name="time" id="time" required value=editRes.time)
+
+    div.form-group
+      label(for="guests") Number of Guests
+      input.form-control(type="number" name="guests" id="guests" min="1" required value=editRes.guests)
+
+    div.form-group
+      label(for="message") Message
+      textarea.form-control(name="message" id="message")= editRes.message
+
+    button.btn.btn-primary(type="submit") Update Reservation
+    a.btn.btn-secondary(href="/admin/reservation") Cancel

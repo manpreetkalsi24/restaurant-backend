@@ -1,8 +1,23 @@
 import express from "express";
 import { ObjectId } from "mongodb";
+import multer from "multer";
+import path from "path";
+
+// Configure upload folder
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/uploads");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage });
+
 const router = express.Router();
 
-// Dashboard page
+/* Dashboard */
 router.get("/", (req, res) => {
   res.render("admin/dashboard", { title: "Admin Dashboard" });
 });
@@ -14,58 +29,70 @@ router.get("/menu", async (req, res) => {
   res.render("admin/menu-list", { title: "Menu List", menu });
 });
 
-// Show add menu item form
+// Add menu item form
 router.get("/menu/add", (req, res) => {
   res.render("admin/menu-add", { title: "Add Menu Item" });
 });
 
-// Add menu item to database
-router.post("/menu/add/submit", async (req, res) => {
+// Add menu item (submit form)
+router.post("/menu/add/submit", upload.single("image"), async (req, res) => {
   const db = req.app.locals.db;
   const newItem = {
     name: req.body.name,
-    category: req.body.category,
     price: parseFloat(req.body.price),
     description: req.body.description,
+    image: `/uploads/${req.file.filename}`, // save local file path
   };
   await db.collection("menuItems").insertOne(newItem);
-  console.log("Menu item added");
+  // console.log("Menu item added with image");
   res.redirect("/admin/menu");
 });
 
-// Show edit menu item form
+// Edit menu item form
 router.get("/menu/edit", async (req, res) => {
   const db = req.app.locals.db;
   const item = await db
     .collection("menuItems")
-    .findOne({ _id: ObjectId.createFromHexString(req.query.itemId) });
+    .findOne({ _id: new ObjectId(req.query.itemId) });
   res.render("admin/menu-edit", { title: "Edit Menu Item", editItem: item });
 });
 
-// Update menu item
-router.post("/menu/edit/submit", async (req, res) => {
+// Edit menu item (submit form)
+router.post("/menu/edit/submit", upload.single("newImage"), async (req, res) => {
   const db = req.app.locals.db;
-  const filter = { _id: ObjectId.createFromHexString(req.body.itemId) };
+  const filter = { _id: ObjectId.createFromHexString(String(req.query.itemId)) };
+
+  // Get the existing item from DB
+  const existingItem = await db.collection("menuItems").findOne(filter);
+
+  // Build the updated item
   const updatedItem = {
     name: req.body.name,
-    category: req.body.category,
     price: parseFloat(req.body.price),
     description: req.body.description,
+    image: req.file
+      ? `/uploads/${req.file.filename}` // If new image uploaded
+      : existingItem.image,             // Else keep old one
   };
+
   await db.collection("menuItems").updateOne(filter, { $set: updatedItem });
   console.log("Menu item updated");
   res.redirect("/admin/menu");
 });
 
-// Delete a menu item
+
+// Delete menu item
 router.get("/menu/delete", async (req, res) => {
   const db = req.app.locals.db;
   await db
     .collection("menuItems")
-    .deleteOne({ _id: ObjectId.createFromHexString(req.query.itemId) });
-  console.log("Menu item deleted");
+    .deleteOne({ _id: new ObjectId(req.query.itemId) });
+  console.log("Menu item deleted successfully");
   res.redirect("/admin/menu");
 });
+
+
+/*  RESERVATION CRUD */
 
 // List all reservations
 router.get("/reservation", async (req, res) => {
@@ -77,12 +104,12 @@ router.get("/reservation", async (req, res) => {
   });
 });
 
-// Show add reservation form
+// Add reservation form
 router.get("/reservation/add", (req, res) => {
   res.render("admin/reservation-add", { title: "Add Reservation" });
 });
 
-// Add reservation to database
+// Add reservation submission
 router.post("/reservation/add/submit", async (req, res) => {
   const db = req.app.locals.db;
   const newRes = {
@@ -92,30 +119,29 @@ router.post("/reservation/add/submit", async (req, res) => {
     date: req.body.date,
     time: req.body.time,
     guests: parseInt(req.body.guests),
-    message: req.body.message || "",
-    createdAt: new Date(),
+    message: req.body.message,
   };
   await db.collection("reservations").insertOne(newRes);
   console.log("Reservation added");
   res.redirect("/admin/reservation");
 });
 
-// Show edit reservation form
+// Edit reservation form
 router.get("/reservation/edit", async (req, res) => {
   const db = req.app.locals.db;
   const resToEdit = await db
     .collection("reservations")
-    .findOne({ _id: ObjectId.createFromHexString(req.query.resId) });
+    .findOne({ _id: new ObjectId(req.query.resId) });
   res.render("admin/reservation-edit", {
     title: "Edit Reservation",
     editRes: resToEdit,
   });
 });
 
-// Update reservation
+// Edit reservation submission
 router.post("/reservation/edit/submit", async (req, res) => {
   const db = req.app.locals.db;
-  const filter = { _id: ObjectId.createFromHexString(req.body.resId) };
+  const filter = { _id: new ObjectId(req.body.resId) };
   const updatedRes = {
     name: req.body.name,
     phone: req.body.phone,
@@ -123,7 +149,7 @@ router.post("/reservation/edit/submit", async (req, res) => {
     date: req.body.date,
     time: req.body.time,
     guests: parseInt(req.body.guests),
-    message: req.body.message || "",
+    message: req.body.message,
   };
   await db.collection("reservations").updateOne(filter, { $set: updatedRes });
   console.log("Reservation updated");
@@ -135,9 +161,32 @@ router.get("/reservation/delete", async (req, res) => {
   const db = req.app.locals.db;
   await db
     .collection("reservations")
-    .deleteOne({ _id: ObjectId.createFromHexString(req.query.resId) });
+    .deleteOne({ _id: new ObjectId(req.query.resId) });
   console.log("Reservation deleted");
   res.redirect("/admin/reservation");
 });
+
+/* Contact Us Messages */
+
+// List all contact messages
+router.get("/contacts", async (req, res) => {
+  const db = req.app.locals.db;
+  const contacts = await db.collection("contacts").find({}).toArray();
+  res.render("admin/contact-list", {
+    title: "Contact Messages",
+    contacts,
+  });
+});
+
+// Delete a contact message
+router.get("/contacts/delete", async (req, res) => {
+  const db = req.app.locals.db;
+  await db
+    .collection("contacts")
+    .deleteOne({ _id: new ObjectId(req.query.contactId) });
+  console.log("Contact message deleted");
+  res.redirect("/admin/contacts");
+});
+
 
 export default router;

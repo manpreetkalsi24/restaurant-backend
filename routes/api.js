@@ -10,7 +10,7 @@ router.get("/menu", async (req, res) => {
     const menu = await db.collection("menuItems").find({}).toArray();
     res.json(menu);
   } catch (error) {
-    console.error("Error fetching menu items:", error);
+    console.error("Error fetching menu:", error);
     res.status(500).json({ message: "Error fetching menu items" });
   }
 });
@@ -21,11 +21,12 @@ router.post("/menu", async (req, res) => {
     const db = req.app.locals.db;
     const newItem = {
       name: req.body.name,
-      category: req.body.category,
       price: parseFloat(req.body.price),
       description: req.body.description,
+      image: req.body.image, 
       createdAt: new Date(),
     };
+
     await db.collection("menuItems").insertOne(newItem);
     res.status(201).json({ message: "Menu item added successfully" });
   } catch (error) {
@@ -105,5 +106,26 @@ router.delete("/reservations/:id", async (req, res) => {
     res.status(500).json({ message: "Error deleting reservation" });
   }
 });
+
+// Save contact message
+router.post("/contact", async (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const contact = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      message: req.body.message,
+      createdAt: new Date(),
+    };
+    await db.collection("contacts").insertOne(contact);
+    console.log("Contact message saved");
+    res.status(201).json({ message: "Message received successfully" });
+  } catch (error) {
+    console.error("Error saving contact:", error);
+    res.status(500).json({ message: "Error saving contact message" });
+  }
+});
+
 
 export default router;
