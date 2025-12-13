@@ -62,7 +62,6 @@ router.post("/menu/edit/submit", upload.single("newImage"), async (req, res) => 
   const db = req.app.locals.db;
   const filter = { _id: ObjectId.createFromHexString(String(req.body.itemId)) };
 
-
   // Get the existing item from DB
   const existingItem = await db.collection("menuItems").findOne(filter);
 
