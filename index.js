@@ -1,49 +1,37 @@
-
 import express from "express";
-import path from "path";
 import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
+import cors from "cors";
+import path from "path";
 import { fileURLToPath } from "url";
 import adminRoutes from "./routes/admin.js";
-import apiRoutes from "./routes/api.js";
-import cors from "cors";
-
-
-
+import apiRoutes from "./routes/api.js"; 
 dotenv.config();
 
-// Connection to mongodb
-const client = new MongoClient(process.env.MONGO_URI);
-await client.connect();
-const db = client.db(process.env.DB_NAME);
-console.log("Connected to MongoDB Atlas");
-
-// Set Up Express App
 const app = express();
-const port = process.env.PORT || 8888;
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(cors());
+// MongoDB connection
+const client = new MongoClient(process.env.MONGO_URI);
+await client.connect();
+const db = client.db(process.env.DB_NAME);
 app.locals.db = db;
+console.log("Connected to MongoDB");
 
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// Views
-app.set("views", path.join(__dirname, "views"));
+// View engine
 app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
 
 // Routes
 app.use("/admin", adminRoutes);
-app.use("/api", apiRoutes);
+app.use("/api", apiRoutes); 
 
-// Default Route
-app.get("/", (req, res) => res.redirect("/admin"));
+app.use(express.static(path.join(__dirname, "public")));
 
-// Start Server
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+const port = process.env.PORT || 8888;
+app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
