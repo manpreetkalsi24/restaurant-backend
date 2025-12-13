@@ -60,7 +60,8 @@ router.get("/menu/edit", async (req, res) => {
 // Edit menu item (submit form)
 router.post("/menu/edit/submit", upload.single("newImage"), async (req, res) => {
   const db = req.app.locals.db;
-  const filter = { _id: ObjectId.createFromHexString(String(req.query.itemId)) };
+  const filter = { _id: ObjectId.createFromHexString(String(req.body.itemId)) };
+
 
   // Get the existing item from DB
   const existingItem = await db.collection("menuItems").findOne(filter);
@@ -71,8 +72,8 @@ router.post("/menu/edit/submit", upload.single("newImage"), async (req, res) => 
     price: parseFloat(req.body.price),
     description: req.body.description,
     image: req.file
-      ? `/uploads/${req.file.filename}` // If new image uploaded
-      : existingItem.image,             // Else keep old one
+      ? `/uploads/${req.file.filename}` 
+      : existingItem.image,             
   };
 
   await db.collection("menuItems").updateOne(filter, { $set: updatedItem });
