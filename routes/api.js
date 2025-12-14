@@ -2,7 +2,6 @@ import express from "express";
 import { ObjectId } from "mongodb";
 
 const router = express.Router();
-
 // Get all menu items
 router.get("/menu", async (req, res) => {
   try {

@@ -1,0 +1,25 @@
+extends ../layout.pug
+
+block content
+  h1.page-title Customer Reviews
+
+  table.menu-table
+    thead
+      tr
+        th Name
+        th Rating
+        th Review
+        th Status
+        th Actions
+    tbody
+      each review in reviews
+        tr
+          td= review.name
+          td= review.rating || "-"
+          td= review.message
+          td= review.isPublished ? "Published" : "Pending"
+          td
+            if !review.isPublished
+              a.btn-edit(href=`/admin/reviews/publish/${review._id}`) Publish
+            else
+              a.btn-secondary(href=`/admin/reviews/unpublish/${review._id}`) Unpublish

@@ -209,4 +209,77 @@ router.get("/contacts/delete/:id", async (req, res) => {
   res.redirect("/admin/contacts");
 });
 
+// POST /api/reviews
+router.post("/api/reviews", async (req, res) => {
+  const db = req.app.locals.db;
+
+  const review = {
+    name: req.body.name,
+    rating: parseInt(req.body.rating),
+    message: req.body.message,
+    isPublished: false,
+    createdAt: new Date(),
+  };
+
+  await db.collection("reviews").insertOne(review);
+  res.status(201).json({ message: "Review submitted for approval" });
+});
+
+// GET /api/reviews
+router.get("/api/reviews", async (req, res) => {
+  const db = req.app.locals.db;
+
+  const reviews = await db
+    .collection("reviews")
+    .find({ isPublished: true })
+    .sort({ createdAt: -1 })
+    .toArray();
+
+  res.json(reviews);
+});
+
+router.get("/admin/reviews", async (req, res) => {
+  const db = req.app.locals.db;
+  const reviews = await db.collection("reviews").find({}).toArray();
+
+  res.render("admin/review-list", { reviews });
+});
+
+// Show all reviews to admin
+router.get("/reviews", async (req, res) => {
+  const db = req.app.locals.db;
+  const reviews = await db.collection("reviews").find({}).toArray();
+
+  res.render("admin/review-list", {
+    title: "Customer Reviews",
+    reviews,
+  });
+});
+
+// Publish a review
+router.get("/reviews/publish/:id", async (req, res) => {
+  const db = req.app.locals.db;
+
+  await db.collection("reviews").updateOne(
+    { _id: new ObjectId(req.params.id) },
+    { $set: { isPublished: true } }
+  );
+
+  res.redirect("/admin/reviews");
+});
+
+// Unpublish a review
+router.get("/reviews/unpublish/:id", async (req, res) => {
+  const db = req.app.locals.db;
+
+  await db.collection("reviews").updateOne(
+    { _id: new ObjectId(req.params.id) },
+    { $set: { isPublished: false } }
+  );
+
+  res.redirect("/admin/reviews");
+});
+
+
 export default router;
+
