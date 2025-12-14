@@ -23,12 +23,14 @@ router.get("/", async (req, res) => {
   const menuCount = await db.collection("menuItems").countDocuments();
   const reservationCount = await db.collection("reservations").countDocuments();
   const contactCount = await db.collection("contacts").countDocuments();
+  const reviewCount = await db.collection("reviews").countDocuments();
 
   res.render("admin/dashboard", {
     title: "Admin Dashboard",
     menuCount,
     reservationCount,
     contactCount,
+    reviewCount
   });
 });
 

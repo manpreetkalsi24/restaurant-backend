@@ -90,10 +90,10 @@ h1, h2 {
 
 /* DASHBOARD STATS */
 .stats-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 25px;
-  margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(240px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
 }
 
 .stat-box {

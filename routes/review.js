@@ -2,24 +2,23 @@ import express from "express";
 
 const router = express.Router();
 
-// Submit a review from React
-router.post("/api/reviews", async (req, res) => {
+// Submit a review
+router.post("/", async (req, res) => {
   const db = req.app.locals.db;
 
-  const review = {
+  await db.collection("reviews").insertOne({
     name: req.body.name,
-    rating: parseInt(req.body.rating),
+    rating: parseInt(req.body.rating) || 0,
     message: req.body.message,
     isPublished: false,
     createdAt: new Date(),
-  };
+  });
 
-  await db.collection("reviews").insertOne(review);
-  res.status(201).json({ message: "Review submitted" });
+  res.status(201).json({ message: "Review submitted for approval" });
 });
 
-// Get only published reviews for React
-router.get("/api/reviews", async (req, res) => {
+// Get published reviews
+router.get("/", async (req, res) => {
   const db = req.app.locals.db;
 
   const reviews = await db

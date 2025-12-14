@@ -1,5 +1,6 @@
 import express from "express";
 import { ObjectId } from "mongodb";
+import reviewRoutes from "./review.js";
 
 const router = express.Router();
 // Get all menu items
@@ -126,5 +127,7 @@ router.post("/contact", async (req, res) => {
   }
 });
 
+// Review APIs
+router.use("/reviews", reviewRoutes);
 
 export default router;
