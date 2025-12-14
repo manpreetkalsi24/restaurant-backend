@@ -1,21 +1,30 @@
 extends ../layout
 
-
 block content
-  h1 Add New Menu Item
-  form(action="/admin/menu/add/submit" method="POST" enctype="multipart/form-data")
-    div
-      label Name:
-      input(type="text" name="name" required)
-    div
-      label Price:
-      input(type="number" name="price" step="0.01" required)
-    div
-      label Description:
-      textarea(name="description" rows="3" required)
-    div
-      label(for="image") Upload Image:
-      input(type="file" name="image" accept="image/*" required)
+  h1.page-title Add New Menu Item
 
-    div
-      button(type="submit") Add Item
+  .form-card
+    form(method="POST", action="/admin/menu/add/submit", enctype="multipart/form-data")
+      
+      .form-group
+        label(for="name") Name
+        input(type="text", id="name", name="name", required)
+
+      .form-group
+        label(for="price") Price
+        input(type="number", id="price", name="price", step="0.01", required)
+
+      .form-group
+        label(for="description") Description
+        textarea(id="description", name="description", rows="4")
+
+      .form-group
+        label(for="image") Upload Image
+        input(type="file", id="image", name="image")
+
+      .form-actions
+        button.btn-primary(type="submit")
+          |  Add Item
+
+        a.btn-secondary(href="/admin/menu")
+          |  Back

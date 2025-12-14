@@ -1,34 +1,68 @@
 extends ../layout
 
 block content
-  h1 Edit Menu Item
+  h1.page-title Edit Menu Item
 
-  form(action="/admin/menu/edit/submit" method="POST" enctype="multipart/form-data")
-    input(type="hidden" name="itemId" value=editItem._id)
+  .form-card
+    form(
+      method="POST",
+      action=`/admin/menu/edit/${menu._id}`,
+      enctype="multipart/form-data"
+    )
 
-    div
-      label(for="name") Name:
-      input(type="text" name="name" id="name" value=editItem.name required)
+      .form-group
+        label(for="name") Name
+        input(
+          type="text",
+          id="name",
+          name="name",
+          value=menu.name,
+          required
+        )
 
-    div
-      label(for="price") Price:
-      input(type="number" name="price" id="price" step="0.01" value=editItem.price required)
+      .form-group
+        label(for="price") Price
+        input(
+          type="number",
+          id="price",
+          name="price",
+          step="0.01",
+          value=menu.price,
+          required
+        )
 
-    div
-      label(for="description") Description:
-      textarea(name="description" id="description" rows="3" required)= editItem.description
+      .form-group
+        label(for="description") Description
+        textarea(
+          id="description",
+          name="description",
+          rows="4"
+        )= menu.description
 
-    div
-      label(for="image") Current Image:
-      if editItem.image
-        img(src=editItem.image alt=editItem.name width="100" height="80" style="object-fit:cover; border-radius:5px; margin-bottom:10px; display:block;")
-      else
-        p(style="color:gray; font-style:italic;") No image uploaded yet
+      .form-group
+        label Current image
+        if menu.image
+          img.menu-preview(
+            src=menu.image,
+            alt=menu.name
+          )
+        else
+          p.no-image No image uploaded
 
-    div
-      label(for="newImage") Upload New Image (optional):
-      input(type="file" name="newImage" id="newImage" accept="image/*")
+      .form-group
+        label(for="image") Change image
+        input(
+          type="file",
+          id="image",
+          name="image",
+          accept="image/*"
+        )
 
-    div(style="margin-top:10px;")
-      button(type="submit" class="btn btn-primary") Update Item
-      a.btn.btn-secondary(href="/admin/menu") Cancel
+      .form-actions
+        button.btn-primary(type="submit")
+          i.fa-solid.fa-save
+          |  Update Item
+
+        a.btn-secondary(href="/admin/menu")
+          i.fa-solid.fa-arrow-left
+          |  Cancel

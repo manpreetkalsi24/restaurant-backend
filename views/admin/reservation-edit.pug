@@ -1,37 +1,85 @@
 extends ../layout.pug
 
 block content
-  h1 Edit Reservation
-  form(action="/admin/reservation/edit/submit" method="POST")
-    input(type="hidden" name="resId" value=editRes._id)
+  h1.page-title Edit Reservation
 
-    div.form-group
-      label(for="name") Name
-      input.form-control(type="text" name="name" id="name" required value=editRes.name)
+  .form-card
+    form(
+      method="POST",
+      action=`/admin/reservation/edit/${editRes._id}`
+    )
 
-    div.form-group
-      label(for="phone") Phone Number
-      input.form-control(type="text" name="phone" id="phone" value=editRes.phone)
+      .form-group
+        label(for="name") Name
+        input(
+          type="text",
+          id="name",
+          name="name",
+          value=editRes.name,
+          required
+        )
 
-    div.form-group
-      label(for="email") Email
-      input.form-control(type="email" name="email" id="email" required value=editRes.email)
+      .form-group
+        label(for="phone") Phone number
+        input(
+          type="text",
+          id="phone",
+          name="phone",
+          value=editRes.phone
+        )
 
-    div.form-group
-      label(for="date") Date
-      input.form-control(type="date" name="date" id="date" required value=editRes.date)
+      .form-group
+        label(for="email") Email
+        input(
+          type="email",
+          id="email",
+          name="email",
+          value=editRes.email,
+          required
+        )
 
-    div.form-group
-      label(for="time") Time
-      input.form-control(type="time" name="time" id="time" required value=editRes.time)
+      .form-group
+        label(for="date") Date
+        input(
+          type="date",
+          id="date",
+          name="date",
+          value=editRes.date,
+          required
+        )
 
-    div.form-group
-      label(for="guests") Number of Guests
-      input.form-control(type="number" name="guests" id="guests" min="1" required value=editRes.guests)
+      .form-group
+        label(for="time") Time
+        input(
+          type="time",
+          id="time",
+          name="time",
+          value=editRes.time,
+          required
+        )
 
-    div.form-group
-      label(for="message") Message
-      textarea.form-control(name="message" id="message")= editRes.message
+      .form-group
+        label(for="guests") Number of guests
+        input(
+          type="number",
+          id="guests",
+          name="guests",
+          min="1",
+          value=editRes.guests,
+          required
+        )
 
-    button.btn.btn-primary(type="submit") Update Reservation
-    a.btn.btn-secondary(href="/admin/reservation") Cancel
+      .form-group
+        label(for="message") Message
+        textarea(
+          id="message",
+          name="message",
+          rows="4"
+        )= editRes.message
+
+      .form-actions
+        button.btn-primary(type="submit")
+          |  Update Reservation
+
+        a.btn-secondary(href="/admin/reservation")
+          |  Cancel

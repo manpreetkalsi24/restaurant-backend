@@ -2,19 +2,44 @@ doctype html
 html
   head
     title= title
-    meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
     link(rel="stylesheet", href="/css/style.css")
+    link(
+      rel="stylesheet",
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    )
+
   body
-    header
-      h1 Restaurant Admin Dashboard
-      nav
-        ul
-          li: a(href="/admin") Dashboard
-          li: a(href="/admin/menu") Menu
-          li: a(href="/admin/reservation") Reservations
-          li: a(href="/admin/contacts") View Contact Messages
-    main
-      block content
-    footer
-      p &copy; 2025 Restaurant Management System made by Manpreet Kaur
+    .admin-container
+      // Sidebar
+      nav.sidebar
+        h2.logo Eatery Dashboard
+        ul.nav-links
+          li
+            a(href="/admin")
+              i.fa-solid.fa-house
+              | Dashboard
+          li
+            a(href="/admin/menu")
+              i.fa-solid.fa-utensils
+              | Menu
+          li
+            a(href="/admin/reservation")
+              i.fa-solid.fa-calendar-check
+              | Reservations
+          li
+            a(href="/admin/contacts")
+              i.fa-solid.fa-envelope
+              | Contact Messages
+
+      // Right side content and footer
+      main.main-content
+        section.content
+          block content
+
+        footer.admin-footer
+          p
+            | &copy; #{new Date().getFullYear()} Eatery Admin Dashboard — All Rights Reserved
+          p
+            | Designed with 
+            i.fa-solid.fa-heart(style="color:#fff; margin:0 4px;")
+            | by Manpreet Kaur

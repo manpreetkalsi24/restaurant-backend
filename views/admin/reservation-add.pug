@@ -1,35 +1,81 @@
 extends ../layout.pug
 
 block content
-  h1 Add New Reservation
-  form(action="/admin/reservation/add/submit" method="POST")
-    div.form-group
-      label(for="name") Name
-      input.form-control(type="text" name="name" id="name" required placeholder="Enter guest name")
+  h1.page-title Add New Reservation
 
-    div.form-group
-      label(for="phone") Phone Number
-      input.form-control(type="text" name="phone" id="phone" placeholder="Enter phone number")
+  .form-card
+    form(method="POST", action="/admin/reservation/add/submit")
 
-    div.form-group
-      label(for="email") Email
-      input.form-control(type="email" name="email" id="email" required placeholder="Enter email address")
+      .form-group
+        label(for="name") Name
+        input(
+          type="text",
+          id="name",
+          name="name",
+          placeholder="Enter guest name",
+          required
+        )
 
-    div.form-group
-      label(for="date") Date
-      input.form-control(type="date" name="date" id="date" required)
+      .form-group
+        label(for="phone") Phone number
+        input(
+          type="text",
+          id="phone",
+          name="phone",
+          placeholder="Enter phone number"
+        )
 
-    div.form-group
-      label(for="time") Time
-      input.form-control(type="time" name="time" id="time" required)
+      .form-group
+        label(for="email") Email
+        input(
+          type="email",
+          id="email",
+          name="email",
+          placeholder="Enter email address",
+          required
+        )
 
-    div.form-group
-      label(for="guests") Number of Guests
-      input.form-control(type="number" name="guests" id="guests" min="1" required placeholder="Enter number of guests")
+      .form-group
+        label(for="date") Date
+        input(
+          type="date",
+          id="date",
+          name="date",
+          required
+        )
 
-    div.form-group
-      label(for="message") Message
-      textarea.form-control(name="message" id="message" rows="3" placeholder="Additional message or request...")
+      .form-group
+        label(for="time") Time
+        input(
+          type="time",
+          id="time",
+          name="time",
+          required
+        )
 
-    button.btn.btn-success(type="submit") Add Reservation
-    a.btn.btn-secondary(href="/admin/reservation") Cancel
+      .form-group
+        label(for="guests") Number of guests
+        input(
+          type="number",
+          id="guests",
+          name="guests",
+          min="1",
+          placeholder="Enter number of guests",
+          required
+        )
+
+      .form-group
+        label(for="message") Message
+        textarea(
+          id="message",
+          name="message",
+          rows="4",
+          placeholder="Additional message or request"
+        )
+
+      .form-actions
+        button.btn-primary(type="submit")
+          |  Add Reservation
+
+        a.btn-secondary(href="/admin/reservation")
+          |  Cancel

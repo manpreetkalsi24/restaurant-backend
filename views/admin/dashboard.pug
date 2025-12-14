@@ -2,6 +2,23 @@ extends ../layout
 
 block content
   h2 Welcome to Admin Dashboard
-  ul.list
-    li: a(href="/admin/menu") Manage Menu Items
-    li: a(href="/admin/reservation") Manage Reservations
+
+  .stats-container
+    .stat-box
+      i.fa-solid.fa-utensils
+      .stat-info
+        h3 Total Menu Items
+        p #{menuCount}
+
+    .stat-box
+      i.fa-solid.fa-calendar-check
+      .stat-info
+        h3 Total Reservations
+        p #{reservationCount}
+
+    .stat-box
+      i.fa-solid.fa-envelope
+      .stat-info
+        h3 Contact Messages
+        p #{contactCount}
+
