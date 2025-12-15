@@ -162,7 +162,7 @@ h1, h2 {
 }
 
 
-/* Secondary button (Back) */
+/* Secondary button */
 .btn-secondary {
   background-color: #ffffff;
   color: #011f4b;
@@ -175,6 +175,10 @@ h1, h2 {
   align-items: center;
   gap: 8px;
   transition: all 0.25s ease;
+}
+
+.unpublish-btn{
+  padding:6px 15px;
 }
 
 .btn-secondary:hover {
@@ -297,6 +301,19 @@ h1, h2 {
   display: flex;
   gap: 15px;
   margin-top: 20px;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  margin-left: 6px;
+}
+
+.btn-delete:hover {
+  background-color: #b52a37;
 }
 
 /* RESPONSIVE */

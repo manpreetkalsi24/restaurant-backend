@@ -24,14 +24,14 @@ router.get("/", async (req, res) => {
   const menuCount = await db.collection("menuItems").countDocuments();
   const reservationCount = await db.collection("reservations").countDocuments();
   const contactCount = await db.collection("contacts").countDocuments();
-  // const reviewCount = await db.collection("reviews").countDocuments();
+  const reviewCount = await db.collection("reviews").countDocuments();
 
   res.render("admin/dashboard", {
     title: "Admin Dashboard",
     menuCount,
     reservationCount,
     contactCount,
-    // reviewCount,
+    reviewCount,
   });
 });
 
@@ -199,6 +199,52 @@ router.get("/contacts/delete/:id", async (req, res) => {
     .deleteOne({ _id: new ObjectId(req.params.id) });
 
   res.redirect("/admin/contacts");
+});
+
+// show all reviews to admin
+router.get("/reviews", async (req, res) => {
+  const db = req.app.locals.db;
+  const reviews = await db.collection("reviews").find({}).toArray();
+
+  res.render("admin/review-list", {
+    title: "Customer Reviews",
+    reviews,
+  });
+});
+
+// publish review
+router.get("/reviews/publish/:id", async (req, res) => {
+  const db = req.app.locals.db;
+
+  await db.collection("reviews").updateOne(
+    { _id: new ObjectId(req.params.id) },
+    { $set: { isPublished: true } }
+  );
+
+  res.redirect("/admin/reviews");
+});
+
+// unpublish review
+router.get("/reviews/unpublish/:id", async (req, res) => {
+  const db = req.app.locals.db;
+
+  await db.collection("reviews").updateOne(
+    { _id: new ObjectId(req.params.id) },
+    { $set: { isPublished: false } }
+  );
+
+  res.redirect("/admin/reviews");
+});
+
+// delete review
+router.get("/reviews/delete/:id", async (req, res) => {
+  const db = req.app.locals.db;
+
+  await db.collection("reviews").deleteOne({
+    _id: new ObjectId(req.params.id),
+  });
+
+  res.redirect("/admin/reviews");
 });
 
 
