@@ -1,6 +1,5 @@
 import express from "express";
 import { ObjectId } from "mongodb";
-import reviewRoutes from "./review.js";
 
 const router = express.Router();
 // Get all menu items
@@ -127,7 +126,34 @@ router.post("/contact", async (req, res) => {
   }
 });
 
-// Review APIs
-router.use("/reviews", reviewRoutes);
+// submit a review
+router.post("/reviews", async (req, res) => {
+  const db = req.app.locals.db;
+
+  const review = {
+    name: req.body.name,
+    rating: parseInt(req.body.rating),
+    message: req.body.message,
+    isPublished: false,
+    createdAt: new Date(),
+  };
+
+  await db.collection("reviews").insertOne(review);
+  res.status(201).json({ message: "Review submitted for approval" });
+});
+
+// get published reviews
+router.get("/reviews", async (req, res) => {
+  const db = req.app.locals.db;
+
+  const reviews = await db
+    .collection("reviews")
+    .find({ isPublished: true })
+    .sort({ createdAt: -1 })
+    .toArray();
+
+  res.json(reviews);
+});
+
 
 export default router;
