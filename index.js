@@ -1,11 +1,11 @@
 import express from "express";
 import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
-import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import adminRoutes from "./routes/admin.js";
 import apiRoutes from "./routes/api.js"; 
+import cors from "cors";
 dotenv.config();
 
 const app = express();
