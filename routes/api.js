@@ -126,42 +126,5 @@ router.post("/contact", async (req, res) => {
   }
 });
 
-// submit a review (user)
-router.post("/reviews", async (req, res) => {
-  try {
-    const db = req.app.locals.db;
-
-    const review = {
-      name: req.body.name,
-      rating: parseInt(req.body.rating),
-      message: req.body.message,
-      isPublished: false,
-      createdAt: new Date(),
-    };
-
-    await db.collection("reviews").insertOne(review);
-    res.status(201).json({ message: "Review submitted for approval" });
-  } catch (err) {
-    res.status(500).json({ message: "Error submitting review" });
-  }
-});
-
-// get ONLY published reviews
-router.get("/reviews", async (req, res) => {
-  try {
-    const db = req.app.locals.db;
-
-    const reviews = await db
-      .collection("reviews")
-      .find({ isPublished: true })
-      .sort({ createdAt: -1 })
-      .toArray();
-
-    res.json(reviews);
-  } catch (err) {
-    res.status(500).json({ message: "Error fetching reviews" });
-  }
-});
-
 
 export default router;
