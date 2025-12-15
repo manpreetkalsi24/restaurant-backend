@@ -1,6 +1,7 @@
 {
   "name": "restaurant-admin",
   "version": "1.0.0",
+  "type": "module",
   "description": "Restaurant App",
   "main": "index.js",
   "scripts": {

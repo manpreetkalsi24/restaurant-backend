@@ -6,6 +6,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import adminRoutes from "./routes/admin.js";
 import apiRoutes from "./routes/api.js"; 
+dotenv.config();
+
+const app = express();
 
 app.use(
   cors({
@@ -17,9 +20,6 @@ app.use(
     credentials: true
   })
 );
-dotenv.config();
-
-const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

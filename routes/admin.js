@@ -3,7 +3,9 @@ import { ObjectId } from "mongodb";
 import multer from "multer";
 import path from "path";
 
-// Configure multer storage for image uploads
+const router = express.Router();
+
+/* image upload setup */
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "public/uploads");
@@ -14,9 +16,8 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-const router = express.Router();
 
-// Render admin dashboard with counts
+/* admin dashboard */
 router.get("/", async (req, res) => {
   const db = req.app.locals.db;
 
@@ -30,23 +31,21 @@ router.get("/", async (req, res) => {
     menuCount,
     reservationCount,
     contactCount,
-    reviewCount
+    reviewCount,
   });
 });
 
-// Display all menu items
+/* menu routes */
 router.get("/menu", async (req, res) => {
   const db = req.app.locals.db;
   const menu = await db.collection("menuItems").find({}).toArray();
   res.render("admin/menu-list", { title: "Menu List", menu });
 });
 
-// Show add menu item form
 router.get("/menu/add", (req, res) => {
   res.render("admin/menu-add", { title: "Add Menu Item" });
 });
 
-// Handle add menu item form submission
 router.post("/menu/add/submit", upload.single("image"), async (req, res) => {
   const db = req.app.locals.db;
 
@@ -61,7 +60,6 @@ router.post("/menu/add/submit", upload.single("image"), async (req, res) => {
   res.redirect("/admin/menu");
 });
 
-// Show edit menu item form
 router.get("/menu/edit/:id", async (req, res) => {
   const db = req.app.locals.db;
 
@@ -75,11 +73,10 @@ router.get("/menu/edit/:id", async (req, res) => {
   });
 });
 
-// Handle edit menu item submission
 router.post("/menu/edit/:id", upload.single("image"), async (req, res) => {
   const db = req.app.locals.db;
-
   const filter = { _id: new ObjectId(req.params.id) };
+
   const existingItem = await db.collection("menuItems").findOne(filter);
 
   const updatedItem = {
@@ -95,7 +92,6 @@ router.post("/menu/edit/:id", upload.single("image"), async (req, res) => {
   res.redirect("/admin/menu");
 });
 
-// Delete a menu item
 router.get("/menu/delete/:id", async (req, res) => {
   const db = req.app.locals.db;
 
@@ -106,7 +102,7 @@ router.get("/menu/delete/:id", async (req, res) => {
   res.redirect("/admin/menu");
 });
 
-// Display all reservations
+/* reservation routes */
 router.get("/reservation", async (req, res) => {
   const db = req.app.locals.db;
   const reservations = await db.collection("reservations").find({}).toArray();
@@ -117,12 +113,10 @@ router.get("/reservation", async (req, res) => {
   });
 });
 
-// Show add reservation form
 router.get("/reservation/add", (req, res) => {
   res.render("admin/reservation-add", { title: "Add Reservation" });
 });
 
-// Handle add reservation submission
 router.post("/reservation/add/submit", async (req, res) => {
   const db = req.app.locals.db;
 
@@ -140,7 +134,6 @@ router.post("/reservation/add/submit", async (req, res) => {
   res.redirect("/admin/reservation");
 });
 
-// Show edit reservation form
 router.get("/reservation/edit/:id", async (req, res) => {
   const db = req.app.locals.db;
 
@@ -154,7 +147,6 @@ router.get("/reservation/edit/:id", async (req, res) => {
   });
 });
 
-// Handle edit reservation submission
 router.post("/reservation/edit/:id", async (req, res) => {
   const db = req.app.locals.db;
 
@@ -178,7 +170,6 @@ router.post("/reservation/edit/:id", async (req, res) => {
   res.redirect("/admin/reservation");
 });
 
-// Delete a reservation
 router.get("/reservation/delete/:id", async (req, res) => {
   const db = req.app.locals.db;
 
@@ -189,7 +180,7 @@ router.get("/reservation/delete/:id", async (req, res) => {
   res.redirect("/admin/reservation");
 });
 
-// Display all contact messages
+/* contact routes */
 router.get("/contacts", async (req, res) => {
   const db = req.app.locals.db;
   const contacts = await db.collection("contacts").find({}).toArray();
@@ -200,7 +191,6 @@ router.get("/contacts", async (req, res) => {
   });
 });
 
-// Delete a contact message
 router.get("/contacts/delete/:id", async (req, res) => {
   const db = req.app.locals.db;
 
@@ -211,43 +201,7 @@ router.get("/contacts/delete/:id", async (req, res) => {
   res.redirect("/admin/contacts");
 });
 
-// POST /api/reviews
-router.post("/api/reviews", async (req, res) => {
-  const db = req.app.locals.db;
-
-  const review = {
-    name: req.body.name,
-    rating: parseInt(req.body.rating),
-    message: req.body.message,
-    isPublished: false,
-    createdAt: new Date(),
-  };
-
-  await db.collection("reviews").insertOne(review);
-  res.status(201).json({ message: "Review submitted for approval" });
-});
-
-// GET /api/reviews
-router.get("/api/reviews", async (req, res) => {
-  const db = req.app.locals.db;
-
-  const reviews = await db
-    .collection("reviews")
-    .find({ isPublished: true })
-    .sort({ createdAt: -1 })
-    .toArray();
-
-  res.json(reviews);
-});
-
-router.get("/admin/reviews", async (req, res) => {
-  const db = req.app.locals.db;
-  const reviews = await db.collection("reviews").find({}).toArray();
-
-  res.render("admin/review-list", { reviews });
-});
-
-// Show all reviews to admin
+/* reviews routes */
 router.get("/reviews", async (req, res) => {
   const db = req.app.locals.db;
   const reviews = await db.collection("reviews").find({}).toArray();
@@ -258,7 +212,6 @@ router.get("/reviews", async (req, res) => {
   });
 });
 
-// Publish a review
 router.get("/reviews/publish/:id", async (req, res) => {
   const db = req.app.locals.db;
 
@@ -270,7 +223,6 @@ router.get("/reviews/publish/:id", async (req, res) => {
   res.redirect("/admin/reviews");
 });
 
-// Unpublish a review
 router.get("/reviews/unpublish/:id", async (req, res) => {
   const db = req.app.locals.db;
 
@@ -282,6 +234,4 @@ router.get("/reviews/unpublish/:id", async (req, res) => {
   res.redirect("/admin/reviews");
 });
 
-
 export default router;
-
