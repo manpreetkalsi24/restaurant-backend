@@ -6,14 +6,15 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   const db = req.app.locals.db;
 
-  await db.collection("reviews").insertOne({
+  const review = {
     name: req.body.name,
-    rating: parseInt(req.body.rating) || 0,
+    rating: parseInt(req.body.rating),
     message: req.body.message,
     isPublished: false,
     createdAt: new Date(),
-  });
+  };
 
+  await db.collection("reviews").insertOne(review);
   res.status(201).json({ message: "Review submitted for approval" });
 });
 
